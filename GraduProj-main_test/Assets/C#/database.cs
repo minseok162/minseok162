@@ -7,14 +7,15 @@ using UnityEngine.Networking;
 [System.Serializable]
 public class GoogleData
 {
-	public string order, result, msg, value;
+	public string order, result, msg, value, profile;
 }
 
 public class database : MonoBehaviour
 {
 
-	const string URL = "https://script.google.com/macros/s/AKfycbxeqVQAnDn1Hqqnkev54B1Jiee75hPv9R5Rf4GStCW5p8n6hOUCmGJj8-5pjSNDDjRG/exec";
+	const string URL = "https://script.google.com/macros/s/AKfycbw5BZ5FRHql1VGNpFy3oAXUpOQUh60uflScoebuV2CFy6w9jE0/exec";
 	public GoogleData GD;
+	public Image image1;
 	public Text nametext;
 	public GameObject MenuUI;
 	public GameObject fristnameUI;
@@ -22,8 +23,13 @@ public class database : MonoBehaviour
 	public GameObject loginUI;
 	public GameObject logoutUI;
 	public InputField IDInput, PassInput, ValueInput;
+	int index;
 	int logout = 0;
+	string pro;
 	string id, pass;
+
+	[SerializeField]
+	Sprite[] sprites;
 
 	bool SetIDPass()
 	{
@@ -61,7 +67,6 @@ public class database : MonoBehaviour
 		form.AddField("order", "login");
 		form.AddField("id", id);
 		form.AddField("pass", pass);
-		
 		StartCoroutine(Post(form));
 		
 	}
@@ -82,9 +87,10 @@ public class database : MonoBehaviour
 	{
 		WWWForm form = new WWWForm();
 		form.AddField("order", "logout");
-		nametext.text = "";
+		nametext.text = "Guest";
 		StartCoroutine(Post(form));
 		logout = 0;
+		image1.sprite = null;
 	}
 
 	public void SetValue()
@@ -94,7 +100,7 @@ public class database : MonoBehaviour
 		form.AddField("value", ValueInput.text);
 
 		StartCoroutine(Post(form));
-		System.Threading.Thread.Sleep(1000);
+		System.Threading.Thread.Sleep(500);
 		fristnameUI.SetActive(false);
 	}
 
@@ -138,6 +144,7 @@ public class database : MonoBehaviour
 			{
 				MenuUI.SetActive(false);
 				fristnameUI.SetActive(true);
+
 			}
 			if (GD.value != "")
 			{
@@ -147,6 +154,12 @@ public class database : MonoBehaviour
 				loginUI.SetActive(false);
 				LoginERRORUI.SetActive(false);
 				nametext.text = GD.value;
+				if (GD.profile != "")
+				{
+					pro = GD.profile;
+					index=int.Parse(pro);
+					image1.sprite = sprites[index];
+				}
 			}
 
 		}
